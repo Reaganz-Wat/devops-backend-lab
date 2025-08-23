@@ -2,5 +2,9 @@
 venv/
 db.sqlite3
 .dockerignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # Add others here
