@@ -1,23 +1,50 @@
+def gv
+
 pipeline {
     agent any
 
+    environment {
+        NEW_VERSION = '1.3.0'
+    }
+
     stages {
-        stage('build') {
+        stage('init') {
             steps {
-                echo 'Building code...'
+                script {
+                    gv = load 'script.groovy'
+                }
             }
         }
-        
-        stage('test') {
-             steps {
-                  echo 'Testing code...'
-             }
+
+        stage('build') {
+            steps {
+                script {
+                    gv.buildApp()
+                }
+                echo "building version ${NEW_VERSION}"
+            }
         }
-        
+
+        stage('test') {
+            when {
+                expression {
+                    BRANCH_NAME == 'develop'
+                }
+            }
+
+            steps {
+                script {
+                    gv.testApp()
+                }
+            }
+        }
+
         stage('deploy') {
-             steps {
-                  echo 'Deploying code...'
-             }
+            steps {
+                script {
+                    gv.deployApp()
+                }
+            }
         }
     }
 }
