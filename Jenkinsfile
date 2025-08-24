@@ -1,49 +1,47 @@
-def gv
-
 pipeline {
     agent any
-
+    
     environment {
         NEW_VERSION = '1.3.0'
+        NEW_VENV = 'venv'
     }
-
+    
     stages {
-        stage('init') {
+
+        stage('Setup Python') {
             steps {
                 script {
-                    gv = load 'script.groovy'
+                    sh """
+                        pip3 -m venv ${NEW_VENV}
+                        . ${NEW_VENV}/bin/activate
+                        pip3 install -r requirements.txt
+                        python manage.py test --verbose2
+                    """
                 }
             }
         }
 
-        stage('build') {
+        stage('Build') {
             steps {
-                script {
-                    gv.buildApp()
-                }
-                echo "building version ${NEW_VERSION}"
+                echo "Building version ${NEW_VERSION}"
             }
         }
 
-        stage('test') {
-            when {
-                expression {
-                    BRANCH_NAME == 'develop'
-                }
-            }
-
+        stage('Test') {
             steps {
-                script {
-                    gv.testApp()
-                }
+                echo "Testing version ${NEW_VERSION}"
             }
         }
 
-        stage('deploy') {
+        stage('Package') {
             steps {
-                script {
-                    gv.deployApp()
-                }
+                echo "Packaging version ${NEW_VERSION}"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "Deploying version ${NEW_VERSION}"
             }
         }
     }
