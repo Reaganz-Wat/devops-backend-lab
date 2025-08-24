@@ -15,7 +15,7 @@ pipeline {
                         python3 -m venv ${NEW_VENV}
                         . ${NEW_VENV}/bin/activate
                         pip3 install -r requirements.txt
-                        python3 manage.py test --verbose2
+                        python3 manage.py test --verbose=2
                     """
                 }
             }
