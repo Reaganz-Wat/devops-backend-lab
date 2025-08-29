@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'plumule',
-    'rest_framework'
+    'rest_framework',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eshops.wsgi.application'
 
+GRAPHENE = {
+    "SCHEMA": "eshops.schema.schema"  # where we’ll define the schema
+}
+
+# CELERY_TASK_ALWAYS_EAGER = True
+
+
+# Celery settings
+# CELERY_BROKER_URL = "amqp://guest:guest@localhost//" # this points to the container when running on a container not the actual rabbitmq, so you have to use the actual ip addr of the computer
+CELERY_BROKER_URL = "amqp://guest:guest@172.17.0.1:5672//"
+CELERY_RESULT_BACKEND = "rpc://"   # (optional: for tracking task results)
+
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -87,7 +101,7 @@ DATABASES = {
     
         'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB', 'postgres'),  # Default fallback
+        'NAME': os.environ.get('POSTGRES_DB', 'plumule'),  # Default fallback
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
